@@ -1,0 +1,20 @@
+{
+	"version": "0.0.1",
+	"name": "com.thedatinglab.fortumo",
+	"cordova_name": "TDLFortumo",
+	"description": "Plugin for Fortumo Native SDKs (Android)",
+	"license": "Apache 2.0",
+	"repo": "https://github.com/thedatinglab/cordova-plugin-fortumo-android",
+	"keywords": [
+		"cordova",
+		"in-app-purchases",
+		"fortumo"
+	],
+	"platforms": [
+		"android"
+	],
+	"engines": [{
+		"name": "cordova",
+		"version": ">=3.0.0"
+	}]
+}

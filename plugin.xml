@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  id="com.thedatinglab.fortumo"
+  version="0.0.1">
+  <engines>
+    <engine name="cordova" version=">=3.0.0" />
+  </engines>
+
+  <!-- Plugin Definition -->
+  <name>TDLFortumo</name>
+  <description>Plugin for Fortumo Native SDKs (Android)</description>
+  <author>The Dating Lab</author>
+  <license>Apache 2.0</license>
+  <keywords>cordova,in-app-purchases,fortumo</keywords>
+  <repo>https://github.com/thedatinglab/tdlfortumo-plugin</repo>
+
+  <!-- JS Code Exposure -->
+  <js-module src="www/tdlfortumo.js" name="TDLFortumo">
+    <clobbers target="navigator.tdlFortumo" />
+  </js-module>
+
+  <!-- Android Platform -->
+  <platform name="android">
+    <!-- Add Feature -->
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="TDLFortumo">
+        <param name="android-package" value="com.thedatinglab.fortumo.TDLFortumo" />
+      </feature>
+    </config-file>
+
+    <!-- Register Services -->
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <!-- Declare these objects, this is part of Fortumo SDK, and should not be called directly -->
+      <receiver android:name="mp.MpSMSReceiver">
+        <intent-filter>
+          <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+        </intent-filter>
+      </receiver>
+      <service android:name="mp.MpService" />
+      <service android:name="mp.StatusUpdateService" />
+      <activity android:name="mp.MpActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="orientation|keyboardHidden|screenSize" />
+     
+      <!-- Implement you own BroadcastReceiver
+      to track payment status, should be protected by "signature" permission -->
+      <receiver android:name="com.thedatinglab.fortumo.TDLPaymentStatusReceiver" android:permission="com.thedatinglab.fortumo.PAYMENT_BROADCAST_PERMISSION">
+        <intent-filter>
+          <action android:name="mp.info.PAYMENT_STATUS_CHANGED" />
+        </intent-filter>
+      </receiver>
+      
+    </config-file>
+
+    <!-- Define Permissions Required -->
+    <config-file target="AndroidManifest.xml" parent="/*">
+      <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+      <uses-permission android:name="android.permission.RECEIVE_SMS" />
+      <uses-permission android:name="android.permission.SEND_SMS" />
+     
+      <!-- Define your own permission to protect payment broadcast -->
+      <permission android:name="com.thedatinglab.fortumo.PAYMENT_BROADCAST_PERMISSION" android:label="Read payment status" android:protectionLevel="signature" />
+      <!-- "signature" permission granted automatically by system, without notifying user. -->
+      <uses-permission android:name="com.thedatinglab.fortumo.PAYMENT_BROADCAST_PERMISSION" />
+      <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    </config-file>
+
+    <!-- Load Source Files -->
+    <source-file src="android/TDLFortumo.java" target-dir="src/com/thedatinglab/tdlfortumo/" />
+    <source-file src="android/TDLPaymentStatusReceiver.java" target-dir="src/com/thedatinglab/tdlfortumo/" />
+    <source-file src="android/FortumoInApp-android-9-4-2.jar" target-dir="libs" />
+
+    <proguard-config>
+-keep class mp.** { *; }
+    </proguard-config>
+  </platform>
+
+</plugin>
